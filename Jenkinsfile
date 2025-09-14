@@ -8,13 +8,16 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME} /workspace/portfolio'
+                echo "Building Docker image from workspace..."
+                sh 'docker build -t ${IMAGE_NAME} ${WORKSPACE}'
             }
         }
         stage('Run Portfolio Container') {
             steps {
+                echo "Stopping old container if exists..."
                 sh 'docker stop portfolio || true'
                 sh 'docker rm portfolio || true'
+                echo "Running new container..."
                 sh 'docker run -d -p 8082:80 --name portfolio ${IMAGE_NAME}'
             }
         }
